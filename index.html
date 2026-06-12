@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orrery: Interactive Solar System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loader">
+    <h1>Orrery</h1>
+    <div class="load-bar-bg">
+      <div class="load-bar" id="load-bar"></div>
+    </div>
+    <p id="load-text">Initializing scene</p>
+  </div>
+
+  <!-- Title -->
+  <div class="panel" id="title-panel">
+    <h1>Orrery</h1>
+    <p>Interactive Solar System · Three.js</p>
+  </div>
+
+  <!-- Planet info card -->
+  <div class="panel" id="info-card">
+    <div class="planet-icon" id="ic-icon"></div>
+    <h2 id="ic-name"></h2>
+    <div class="subtitle" id="ic-type"></div>
+    <div class="stat-row">
+      <span class="stat-label">Distance from Sun</span>
+      <span class="stat-value" id="ic-dist"></span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Orbital Period</span>
+      <span class="stat-value" id="ic-period"></span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Diameter</span>
+      <span class="stat-value" id="ic-diam"></span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Avg Temp</span>
+      <span class="stat-value" id="ic-temp"></span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Moons</span>
+      <span class="stat-value" id="ic-moons"></span>
+    </div>
+    <button id="close-btn">&#10005;&nbsp;&nbsp;Close</button>
+  </div>
+
+  <!-- Bottom controls -->
+  <div class="panel" id="controls-panel">
+    <span class="ctrl-label">Speed</span>
+    <input type="range" id="speed-slider" min="0" max="5" step="0.05" value="1">
+    <span class="ctrl-value" id="speed-display">1.0×</span>
+    <div class="ctrl-sep"></div>
+    <button id="pause-btn" title="Pause / Resume">⏸</button>
+    <div class="ctrl-sep"></div>
+    <span class="ctrl-label">Orbits</span>
+    <button id="orbits-btn">ON</button>
+    <div class="ctrl-sep"></div>
+    <button id="reset-btn">Reset View</button>
+  </div>
+
+  <!-- Planet navigation pills -->
+  <div id="planet-nav"></div>
+
+  <!-- Misc UI -->
+  <div id="tooltip"></div>
+  <div id="status"></div>
+  <div id="hint">Click any planet to explore · Drag to rotate · Scroll to zoom</div>
+
+  <!-- Three.js ESM import map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three":          "https://unpkg.com/three@0.155.0/build/three.module.js",
+        "three/addons/":  "https://unpkg.com/three@0.155.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <!-- Main scene script -->
+  <script type="module" src="main.js"></script>
+
+</body>
+</html>
