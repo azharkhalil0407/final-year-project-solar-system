@@ -1,11 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// ─────────────────────────────────────────
-// PLANET DATA
-// All sizes and distances are artistically scaled for visual clarity.
-// Scientific values (realDist, period, diam, temp, moons) are accurate.
-// ─────────────────────────────────────────
 const PLANET_DATA = [
   {
     name: 'Mercury', type: 'Terrestrial Planet',
@@ -59,9 +54,6 @@ const PLANET_DATA = [
 
 const PLANET_ICONS = ['☿', '♀', '🌍', '♂', '♃', '♄', '⛢', '♆'];
 
-// ─────────────────────────────────────────
-// SCENE SETUP
-// ─────────────────────────────────────────
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 3000);
@@ -89,9 +81,6 @@ controls.maxDistance = 400;
 controls.enablePan = false;
 controls.autoRotate = false;
 
-// ─────────────────────────────────────────
-// LIGHTING
-// ─────────────────────────────────────────
 const ambientLight = new THREE.AmbientLight(0x111122, 0.6);
 scene.add(ambientLight);
 
@@ -106,9 +95,6 @@ const fillLight = new THREE.DirectionalLight(0xff8844, 0.15);
 fillLight.position.set(10, 20, 30);
 scene.add(fillLight);
 
-// ─────────────────────────────────────────
-// STAR FIELD  (three layers for depth)
-// ─────────────────────────────────────────
 function makeStars(count, radiusMin, radiusMax, size, color) {
   const geo = new THREE.BufferGeometry();
   const pos = new Float32Array(count * 3);
@@ -130,9 +116,6 @@ scene.add(makeStars(5000, 200, 600,  0.35, 0xffffff));
 scene.add(makeStars(3000, 600, 1500, 0.60, 0xbbccff));
 scene.add(makeStars(1500, 200, 400,  0.15, 0xffeedd));
 
-// ─────────────────────────────────────────
-// SUN
-// ─────────────────────────────────────────
 const SUN_R = 4.2;
 
 const sunMat = new THREE.MeshStandardMaterial({
@@ -145,7 +128,6 @@ const sunMat = new THREE.MeshStandardMaterial({
 const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(SUN_R, 128, 128), sunMat);
 scene.add(sunMesh);
 
-// Corona: custom Fresnel rim shader
 const coronaMat = new THREE.ShaderMaterial({
   uniforms: {
     time: { value: 0 },
@@ -182,22 +164,17 @@ const coronaMesh = new THREE.Mesh(
 );
 scene.add(coronaMesh);
 
-// Outer haze
 scene.add(new THREE.Mesh(
   new THREE.SphereGeometry(SUN_R * 2.2, 32, 32),
   new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.04, side: THREE.BackSide })
 ));
 
-// Surface flicker sphere
 const sunSurface = new THREE.Mesh(
   new THREE.SphereGeometry(SUN_R * 0.99, 64, 64),
   new THREE.MeshBasicMaterial({ color: 0xffcc44, transparent: true, opacity: 0.15 })
 );
 scene.add(sunSurface);
 
-// ─────────────────────────────────────────
-// ATMOSPHERIC GLOW (reusable Fresnel shader)
-// ─────────────────────────────────────────
 function makeAtmosphere(radius, color, intensity = 1.0) {
   const mat = new THREE.ShaderMaterial({
     uniforms: {
@@ -231,9 +208,6 @@ function makeAtmosphere(radius, color, intensity = 1.0) {
   return new THREE.Mesh(new THREE.SphereGeometry(radius, 64, 64), mat);
 }
 
-// ─────────────────────────────────────────
-// SATURN RINGS  (disc geometry, not torus)
-// ─────────────────────────────────────────
 function makeSaturnRings(innerR, outerR) {
   const segments = 256;
   const verts = [], uvs = [], indices = [];
@@ -300,9 +274,6 @@ function makeUranusRings(r, halfWidth) {
   );
 }
 
-// ─────────────────────────────────────────
-// BUILD PLANETS
-// ─────────────────────────────────────────
 const planetObjects = [];
 const orbitLines = [];
 
@@ -342,12 +313,10 @@ PLANET_DATA.forEach((d, i) => {
   mesh.position.x = d.dist;
   scene.add(pivot);
 
-  // Atmospheres
   if (d.isEarth)         mesh.add(makeAtmosphere(d.size * 1.05, '#4488ff', 1.4));
   else if (d.name === 'Venus')   mesh.add(makeAtmosphere(d.size * 1.04, '#ddaa44', 0.9));
   else if (d.name === 'Neptune') mesh.add(makeAtmosphere(d.size * 1.03, '#2244cc', 0.8));
 
-  // Rings
   let ringMesh = null;
   if (d.rings && !d.thinRings) {
     ringMesh = makeSaturnRings(d.size * 1.35, d.size * 2.45);
@@ -360,7 +329,6 @@ PLANET_DATA.forEach((d, i) => {
     mesh.add(ringMesh);
   }
 
-  // Earth cloud layer
   let cloudMesh = null;
   if (d.isEarth) {
     cloudMesh = new THREE.Mesh(
@@ -373,9 +341,6 @@ PLANET_DATA.forEach((d, i) => {
   planetObjects.push({ ...d, pivot, mesh, cloudMesh, ring: ringMesh, idx: i });
 });
 
-// ─────────────────────────────────────────
-// ASTEROID BELT
-// ─────────────────────────────────────────
 (function buildAsteroidBelt() {
   const count = 6000;
   const pos  = new Float32Array(count * 3);
@@ -401,9 +366,6 @@ PLANET_DATA.forEach((d, i) => {
   })));
 })();
 
-// ─────────────────────────────────────────
-// UI STATE
-// ─────────────────────────────────────────
 let speedMult      = 1.0;
 let paused         = false;
 let orbitsVisible  = true;
@@ -418,7 +380,6 @@ const infoCard    = document.getElementById('info-card');
 const speedSlider = document.getElementById('speed-slider');
 const speedDisplay = document.getElementById('speed-display');
 
-// Build nav pills
 const nav = document.getElementById('planet-nav');
 PLANET_DATA.forEach((d, i) => {
   const btn = document.createElement('button');
@@ -429,7 +390,6 @@ PLANET_DATA.forEach((d, i) => {
   nav.appendChild(btn);
 });
 
-// Controls
 speedSlider.addEventListener('input', () => {
   speedMult = parseFloat(speedSlider.value);
   speedDisplay.textContent = speedMult.toFixed(1) + '×';
@@ -456,7 +416,6 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 
 document.getElementById('close-btn').addEventListener('click', clearSelection);
 
-// Mouse events
 renderer.domElement.addEventListener('click',     onCanvasClick);
 renderer.domElement.addEventListener('mousemove', onMouseMove);
 
@@ -540,9 +499,6 @@ function clearSelection() {
   document.querySelectorAll('.pnav').forEach(b => b.classList.remove('active'));
 }
 
-// ─────────────────────────────────────────
-// ANIMATION LOOP
-// ─────────────────────────────────────────
 let prevTime   = performance.now();
 let frameCount = 0;
 let fpsTime    = performance.now();
@@ -557,20 +513,17 @@ function tick() {
   const t   = now / 1000;
   const spd = paused ? 0 : speedMult;
 
-  // Sun
   coronaMat.uniforms.time.value  = t;
   sunMesh.rotation.y            += dt * 0.12 * spd;
   sunSurface.material.opacity    = 0.1 + 0.06 * Math.sin(t * 2.1);
   sunLight.intensity             = 3.2 + 0.3  * Math.sin(t * 1.6);
 
-  // Planets
   planetObjects.forEach(p => {
     p.pivot.rotation.y  += p.speed * dt * spd * 10;
     p.mesh.rotation.y   += dt * 0.5;
     if (p.cloudMesh) p.cloudMesh.rotation.y += dt * 0.08;
   });
 
-  // Camera lerp
   if (cameraLerpActive) {
     const lf = 1 - Math.pow(0.04, dt);
     camera.position.lerp(cameraTargetPos, lf);
@@ -591,18 +544,12 @@ function tick() {
   }
 }
 
-// ─────────────────────────────────────────
-// RESIZE
-// ─────────────────────────────────────────
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
-// ─────────────────────────────────────────
-// LOADING SEQUENCE
-// ─────────────────────────────────────────
 const loadSteps = [
   'Initializing scene',
   'Building star field',

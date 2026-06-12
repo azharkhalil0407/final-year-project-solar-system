@@ -12,6 +12,17 @@ The name "Orrery" comes from the mechanical clockwork models of the solar system
 
 ---
 
+## File Structure
+
+```
+orrery/
+├── index.html    # HTML structure and Three.js import map
+├── style.css     # All UI styles: panels, controls, loading screen, tooltips
+└── main.js       # Scene setup, shaders, planets, animation loop, interactions
+```
+
+---
+
 ## Features
 
 **Rendering and visuals**
@@ -51,7 +62,7 @@ Every stat in the info panel is sourced from NASA planetary fact sheets: real di
 | Camera Controls | Three.js OrbitControls |
 | Geometry | Custom BufferGeometry for Saturn ring disc |
 | UI | Vanilla HTML/CSS with glassmorphism |
-| Build | No bundler. Single HTML file, ESM imports. |
+| Build | No bundler. Three files, ESM imports. |
 
 ---
 
@@ -65,15 +76,17 @@ The brief was open-ended: demonstrate meaningful use of 3D rendering in the brow
 
 ## Running It
 
-No installation needed. The entire project is a single HTML file.
+ES modules require a server. Opening index.html directly over file:// will not work.
 
 ```bash
-# Open directly in any modern browser
-open solar_system.html
+# Navigate into the project folder
+cd orrery
 
-# Or serve it locally
+# Start a local server
 python -m http.server 8000
-# then visit http://localhost:8000/solar_system.html
+
+# Then open in your browser
+# http://localhost:8000
 ```
 
 Works in Chrome, Firefox, and Edge. Requires WebGL 2 support, which any browser from 2020 onward handles fine.
@@ -104,7 +117,7 @@ Going into this I knew basic Three.js: meshes, lights, a renderer loop. Coming o
 - How to build custom geometry with BufferGeometry instead of relying on primitives
 - Why exponential camera lerp feels smoother than linear interpolation
 - How tone mapping affects the final render output
-- How to structure a single-file project cleanly without a build system
+- How to structure a multi-file vanilla JS project without a build system
 
 ---
 
@@ -114,3 +127,5 @@ Project developed under the supervision of my professor at KIIT University, whos
 
 Planet data sourced from NASA Solar System Exploration fact sheets.
 Three.js by Mr.doob and contributors: https://threejs.org
+
+---
