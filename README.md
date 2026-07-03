@@ -1,4 +1,4 @@
-# Orrery: 3D Interactive Solar System.
+# Orrery: 3D Interactive Solar System
 
 A real-time 3D solar system simulation built with Three.js as part of my final year B.Tech major project in Computer Science and Engineering. The project was developed under the guidance of my professor, whose core idea was to explore 3D web development using Three.js as the primary rendering framework.
 
